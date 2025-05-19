@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.error import TelegramError
+from asgiref.sync import async_to_sync
 
 # Load environment variables
 load_dotenv()
@@ -136,7 +137,10 @@ class NotifyTelegramView(APIView):
             course = request.data.get('course')
             
             # Send to Telegram
-            asyncio.run(self.send_telegram_message(name, phone, fees_paid, email, course))
+            
+
+            async_to_sync(self.send_telegram_message)(name, phone, fees_paid, email, course)
+    
             
             return Response({
                 'status': 'success',
